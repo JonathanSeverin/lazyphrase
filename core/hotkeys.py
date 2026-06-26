@@ -1,15 +1,17 @@
 from pynput import keyboard
 
+current_keys = set()
 
 def on_press(key):
+  current_keys.add(key)
   try:
     print(f'alphanumeric key {key.char} pressed')
   except AttributeError:
     print(f'special key {key} pressed')
 
 
-
 def on_release(key):
+  current_keys.discard(key)
   print(f'{key} released')
   if key == keyboard.Key.esc:
     # Stop listener
@@ -24,3 +26,4 @@ def start_listener():
   )
   listener.start()
   listener.join()
+
