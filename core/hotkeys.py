@@ -17,11 +17,10 @@ def on_release(key):
     ## Just for testing. Should not stop the listener in production code.
 
 
-
-listener = keyboard.Listener(
-  on_press=on_press,
-  on_release=on_release
-)
-
-listener.start()
-listener.join()
+def start_listener():
+  listener = keyboard.Listener(
+    on_press=on_press,
+    on_release=on_release
+  )
+  listener.start()
+  listener.join()
