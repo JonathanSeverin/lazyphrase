@@ -18,6 +18,21 @@ def on_release(key):
     return False
     ## Just for testing. Should not stop the listener in production code.
 
+def build_hotkey_string():
+  elements = []
+
+  for key in current_keys:
+    try:
+      char = key.char
+      if char:
+        elements.append(str(char.lower()))
+    except AttributeError:
+      lst = str(key).split(".")
+      if len(lst) == 2 and lst[0] == "Key": elements.append(lst[1])
+
+  elements.sort() # ensures consistent order for the hotkey string (since sets are unordered and could lead to different strings for the same hotkey combination)
+  return "+".join(elements)
+
 
 def start_listener():
   listener = keyboard.Listener(
