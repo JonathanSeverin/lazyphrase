@@ -6,11 +6,12 @@ hotkeys = {} # Unsure if this should be in main or in hotkeys. Should be loaded 
 # Maybe hotkey_map = load_snippets() from storage folder
 
 
-
+def handle_hotkey(hotkey):
+  print(hotkey)
 
 
 def main():
-  start_listener()
+  start_listener(handle_hotkey)
 
 
 if __name__ == "__main__":
