@@ -18,16 +18,26 @@ def normalize_key(key):
 def start_listener(on_hotkey):
 
   current_keys = set()
+  last_hotkey = None
 
   def on_press(key):
+    nonlocal last_hotkey
+
     current_keys.add(normalize_key(key))
     if len(current_keys) > 1:
       hotkey_string = build_hotkey_string(current_keys) 
-      on_hotkey(hotkey_string)
-    
+
+      if hotkey_string != last_hotkey:
+        on_hotkey(hotkey_string)
+        last_hotkey = hotkey_string
+
 
   def on_release(key):
+    nonlocal last_hotkey
+
     current_keys.discard(normalize_key(key))
+    last_hotkey = None
+
     if key == keyboard.Key.esc:
       # Stop listener
       return False
