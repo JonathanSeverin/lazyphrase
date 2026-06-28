@@ -11,8 +11,14 @@ def normalize_key(key):
   try:
     if key.char: return str(key.char).lower()
   except AttributeError:
-    pass
-  return str(key).replace("Key.", "")
+    lst = str(key).split(".")
+    temp = ""
+    if len(lst) > 1 and lst[0] == "Key": temp = lst[1]
+
+    if temp.endswith("_l") or temp.endswith("_r"):
+      temp = temp[:-2]  # Remove the "_l" or "_r" ending
+
+  return temp.lower() if temp else str(key).lower() 
 
 
 def start_listener(on_hotkey):
