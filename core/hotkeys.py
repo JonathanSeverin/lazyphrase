@@ -75,3 +75,7 @@ state and avoid issues if key release events are missed by the system.
 Extra layer in additon to on_release to ensure that current_keys is cleared after a hotkey is triggered.
 This is to avoid issues if key release events are missed by the system.
 """
+
+"""
+Note2: Pressing ctrl+c crashed the program. Should be handled in a proper manner. For now, I will just ignore it.
+"""
