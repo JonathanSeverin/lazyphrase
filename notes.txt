@@ -1,0 +1,6 @@
+TODO:
+* Implement popup
+* Connect it to action
+* Storage --> saving and loding from/to disk
+* UI for showing phrase content when a listbox item is hovered over
+* UI for adding/modifying/deleting reposition phrases

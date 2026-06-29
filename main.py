@@ -2,6 +2,7 @@ from core.hotkeys import start_listener
 from core.expander import insert_text
 from models.phrase import Phrase
 import time # just for testing purposes
+from features.popup import show_popup
 
 phrase1 = Phrase(
   "IKEA sim i post", 
@@ -41,7 +42,8 @@ hotkeys = {
   "a+shift": [phrase3, phrase4],  # Example of multiple phrases for the same hotkey
 } 
 
-def show_popup(phrases):
+
+""" def show_popup(phrases):
   for i, p in enumerate(phrases):
     print(f"{i+1}. {p.title}")
   inp = int(input("What number of phrase would you like? "))
@@ -49,7 +51,7 @@ def show_popup(phrases):
 
   time.sleep(2) # testing purposes, so I can change focus to different window and get the text printed there
   
-  insert_text(p.content)
+  insert_text(p.content) """
 
 
 def handle_hotkey(hotkey):
