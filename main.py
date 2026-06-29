@@ -43,17 +43,6 @@ hotkeys = {
 } 
 
 
-""" def show_popup(phrases):
-  for i, p in enumerate(phrases):
-    print(f"{i+1}. {p.title}")
-  inp = int(input("What number of phrase would you like? "))
-  p = phrases[inp -1]
-
-  time.sleep(2) # testing purposes, so I can change focus to different window and get the text printed there
-  
-  insert_text(p.content) """
-
-
 def handle_hotkey(hotkey):
   if hotkey in hotkeys:
     phrases = hotkeys[hotkey]

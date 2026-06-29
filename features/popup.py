@@ -8,6 +8,7 @@ def show_popup(phrases):
   root.geometry("250x300")
    
   listbox = tk.Listbox(root)
+  listbox.pack(fill=tk.BOTH, expand=True)
 
   for c, phrase in enumerate(phrases):
     listbox.insert(c, phrase.title)
@@ -18,8 +19,9 @@ def show_popup(phrases):
     if selection:
       index = selection[0]
       phrase = phrases[index]
-      insert_text(phrase.content)
       root.destroy()  # Close the popup after selection
+      insert_text(phrase.content)
+      
 
 
   def on_hover(event):
@@ -28,23 +30,19 @@ def show_popup(phrases):
     listbox.selection_set(index)
   
 
-  # Clicks outside of popup should close it. Need to implement that
   def on_close():
     root.destroy()  # Close the popup when the window is closed
 
+  # Clicks outside of popup should close it. Need to implement that
+  #def on_click_outside(event):
 
 
-
+  # Bind events
   listbox.bind("<Button-1>", on_click)
   listbox.bind("<Motion>", on_hover)
+  
+  root.attributes("-topmost", True)  # Keep the popup on top of other windows
+  #root.focus_force()  # Force focus on the popup window
+  root.protocol("WM_DELETE_WINDOW", on_close)  # Handle window close event
 
-
-  listbox.pack(fill=tk.BOTH, expand=True)
   root.mainloop()
-
-
-""" 
-skjønne koden
-fikse display av koden, ser helt ass ut
-fikse hvorfor den ikke limer inn andre steder enn i terminal nå
- """
