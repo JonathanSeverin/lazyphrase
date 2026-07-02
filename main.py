@@ -1,7 +1,8 @@
 from core.hotkeys import start_listener
 from core.expander import insert_text
 from models.phrase import Phrase
-import time # just for testing purposes
+from storage.file_store import save_to_file, load_from_file
+
 from features.popup import show_popup
 
 phrase1 = Phrase(
@@ -37,17 +38,20 @@ phrase4 = Phrase(
 
 # For now a hardcoded dictionary. Later, we I will load this from a JSON file. Should only be combinations of keys that a user ha created (from the allowed hotkey combinations)
 # Maybe hotkey_map = load_snippets() from storage folder
-hotkeys = {
+hardcoded_testdata = {
   "alt+t": [phrase1, phrase2],  # Example of multiple phrases for the same hotkey
   "a+shift": [phrase3, phrase4],  # Example of multiple phrases for the same hotkey
 } 
 
+hotkeys = load_from_file()
+
+
 
 def handle_hotkey(hotkey):
-  if hotkey in hotkeys:
-    phrases = hotkeys[hotkey]
+  if hotkey in hardcoded_testdata:
+    phrases = hardcoded_testdata[hotkey]
     show_popup(phrases)
-  else: print(hotkey) # This line should not be in production code
+  else: save_to_file(hardcoded_testdata)# This line should not be in production code
 
 
 
