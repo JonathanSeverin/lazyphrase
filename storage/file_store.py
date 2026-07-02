@@ -15,17 +15,20 @@ path.parent.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
 
 def save_to_file(data):
-  with open(path, "w") as f:
-    destruct = []
-    for key, value in data.items():
-      for phrase in value:
-        destruct.append({
-          "title": phrase.title,
-          "content": phrase.content,
-          "hotkey": phrase.hotkey,
-          "is_active": phrase.is_active
-        })
-    json.dump(destruct, f)
+  try:
+    with open(path, "w") as f:
+      destruct = []
+      for key, value in data.items():
+        for phrase in value:
+          destruct.append({
+            "title": phrase.title,
+            "content": phrase.content,
+            "hotkey": phrase.hotkey,
+            "is_active": phrase.is_active
+          })
+      json.dump(destruct, f, indent=2, ensure_ascii=False)
+  except OSError as e:
+    print(f"Could not save phrases to file {e}")
   
 
 def load_from_file():
