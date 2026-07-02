@@ -1,0 +1,12 @@
+TODO:
+* Storage --> saving and loding from/to disk
+* UI for showing phrase content when a listbox item is hovered over
+* Make ui popup placement savable
+* UI for adding/modifying/deleting reposition phrases
+
+
+Small stuff:
+* Make a limit to both title and content of phrases length
+* Add to main README that you need to install xclip for pyperclip to work?
+* If only one phrase on that hotkye comobo --> paste text directly without opening popup
+* Phrase content is currently also pasted into the terminal. Does not affect functionality, investigate later if needed.

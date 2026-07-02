@@ -4,7 +4,6 @@ from pynput.keyboard import Controller, Key
 keyboard = Controller()
 
 def insert_text(text):
-  print("INSERTING: ", text)
   pyperclip.copy(text)
   keyboard.press(Key.ctrl)
   keyboard.press('v')
