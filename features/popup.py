@@ -38,12 +38,16 @@ def show_popup(phrases):
   # Clicks outside of popup should close it. Need to implement that
   #def on_click_outside(event):
 
+  def check_focus():
+    if root.focus_displayof() is None:
+      root.destroy()  # Close the popup when it loses focus
 
   # Bind events
   listbox.bind("<Button-1>", on_click)
   listbox.bind("<Return>", on_click)  # Bind Enter key to selection
   listbox.bind("<Motion>", on_hover)
-  
+  root.bind("<FocusOut>", lambda event: root.after(100, check_focus))  # Close the popup when it loses focus
+
   root.attributes("-topmost", True)  # Keep the popup on top of other windows
   #root.focus_force()  # Force focus on the popup window
   root.protocol("WM_DELETE_WINDOW", on_close)  # Handle window close event
