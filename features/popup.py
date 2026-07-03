@@ -13,6 +13,8 @@ def show_popup(phrases):
   for c, phrase in enumerate(phrases):
     listbox.insert(c, phrase.title)
 
+  listbox.focus_set()  # Set focus to the listbox so it can receive keyboard events
+
   
   def on_click(event):
     selection = listbox.curselection()
@@ -39,6 +41,7 @@ def show_popup(phrases):
 
   # Bind events
   listbox.bind("<Button-1>", on_click)
+  listbox.bind("<Return>", on_click)  # Bind Enter key to selection
   listbox.bind("<Motion>", on_hover)
   
   root.attributes("-topmost", True)  # Keep the popup on top of other windows
