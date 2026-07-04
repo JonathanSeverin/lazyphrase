@@ -1,4 +1,6 @@
 from pynput import keyboard
+import time
+import threading
 
 
 def build_hotkey_string(current_keys):
@@ -32,14 +34,18 @@ def start_listener(on_hotkey):
 
   def on_press(key):
       nonlocal last_hotkey
-
       current_keys.add(normalize_key(key))
+
+      # Debug: timestamp, thread and current keys
+      print(f"[{time.time():.3f}] on_press thread={threading.current_thread().name} keys={list(current_keys)}")
 
       if len(current_keys) > 1:
         hotkey_string = build_hotkey_string(current_keys) 
 
         if hotkey_string != last_hotkey:
+          print(f"[{time.time():.3f}] calling on_hotkey thread={threading.current_thread().name} hotkey={hotkey_string}")
           on_hotkey(hotkey_string)
+          print(f"[{time.time():.3f}] returned from on_hotkey thread={threading.current_thread().name} hotkey={hotkey_string}")
           last_hotkey = hotkey_string
           current_keys.clear()  # Clear the set after triggering the hotkey. See note 1 at end of file for explanation
   
@@ -61,7 +67,6 @@ def start_listener(on_hotkey):
     on_release=on_release
   )
   listener.start()
-  listener.join()
 
 
 """  

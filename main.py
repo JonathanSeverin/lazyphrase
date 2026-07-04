@@ -1,5 +1,6 @@
 from core.hotkeys import start_listener
 from core.expander import insert_text
+from features.popup_manager import init_popup_manager
 from models.phrase import Phrase
 from storage.file_store import save_to_file, load_from_file
 
@@ -56,6 +57,7 @@ def handle_hotkey(hotkey):
 
 
 def main():
+  init_popup_manager()
   start_listener(handle_hotkey)
 
 if __name__ == "__main__":
