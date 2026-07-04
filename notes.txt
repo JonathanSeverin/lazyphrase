@@ -10,3 +10,6 @@ Small stuff:
 * Add to main README that you need to install xclip for pyperclip to work?
 * If only one phrase on that hotkye comobo --> paste text directly without opening popup
 * Phrase content is currently also pasted into the terminal. Does not affect functionality, investigate later if needed.
+* Before copying phrase to clipboard, store whats currently in the clipboard to a variable, and paste it back in after inserting the 
+phrase to the active input field. That way you dont loose what was copied. You dont want this phrase app to 
+act as ctrl+c, ctrl+v to the end user
