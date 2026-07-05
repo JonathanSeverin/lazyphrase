@@ -9,8 +9,6 @@ def create_popup(root, phrases, on_popup_close):
   toplvl = tk.Toplevel(root)
   toplvl.minsize("150", "200")
   toplvl.geometry("250x300")
-  print("Creating new popup")
-  current_popup = toplvl  # Set the current popup to the new window
    
   listbox = tk.Listbox(toplvl)
   listbox.pack(fill=tk.BOTH, expand=True)
@@ -68,3 +66,4 @@ def create_popup(root, phrases, on_popup_close):
   toplvl.attributes("-topmost", True)  # Keep the popup on top of other windows
   toplvl.protocol("WM_DELETE_WINDOW", on_close)  # Handle window close event
 
+  return toplvl

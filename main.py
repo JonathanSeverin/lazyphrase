@@ -4,8 +4,6 @@ from features.popup_manager import init_popup_manager, request_popup
 from models.phrase import Phrase
 from storage.file_store import save_to_file, load_from_file
 
-from features.popup import show_popup
-
 phrase1 = Phrase(
   "IKEA sim i post", 
   "Følgende skjer nå for deg:" \
@@ -59,7 +57,7 @@ def handle_hotkey(hotkey):
 def main():
   root = init_popup_manager()
   start_listener(handle_hotkey)
-  root.mainloop()  # Start the Tkinter main loop to keep the application running
+  root.mainloop()  # Start the Tkinter main loop 
 
 if __name__ == "__main__":
   main()
