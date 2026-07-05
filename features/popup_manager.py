@@ -1,23 +1,29 @@
 import tkinter as tk
 
-from features.popup import show_popup
+from features.popup import create_popup
 
 
 root = None
+top_level_popup = None  # Global variable to keep track of the current popup window
 
 def init_popup_manager():
     global root
     root = tk.Tk()
-    root.withdraw()  # Hide the main window
-    # return root  # Return the root window for further use if needed
+    # root.withdraw()  # Hide the main window
+    return root  # Return the root window for further use if needed
 
 
 
 
 def request_popup(phrases):
-    """
-    Request to show a popup with the given phrases.
-    This function is called from the main thread and schedules the popup to be shown in the main thread.
-    """
-    # Schedule the show_popup function to be called in the main thread
-    tk._default_root.after(0, show_popup, phrases)
+    # blabla
+    global top_level_popup
+    top_level_popup = create_popup(root, phrases, on_popup_close)  # Call the function to create the popup window
+    top_level_popup.mainloop()  # Start the main loop for the popup window
+
+
+def on_popup_close():
+    global top_level_popup
+    if top_level_popup is not None:
+        top_level_popup.destroy()  
+        top_level_popup = None  
