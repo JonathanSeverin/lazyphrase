@@ -1,6 +1,8 @@
+import tkinter as tk
+
 from core.hotkeys import start_listener
-from core.expander import insert_text
 from features.popup_manager import init_popup_manager, request_popup
+from features.phrase_manager import init_phrase_manager
 from models.phrase import Phrase
 from storage.file_store import save_to_file, load_from_file
 
@@ -55,7 +57,10 @@ def handle_hotkey(hotkey):
 
 
 def main():
-  root = init_popup_manager()
+  root = tk.Tk()
+  root.withdraw()  # Hide the main window
+  init_phrase_manager(root)  
+  init_popup_manager(root)
   start_listener(handle_hotkey)
   root.mainloop()  # Start the Tkinter main loop 
 
