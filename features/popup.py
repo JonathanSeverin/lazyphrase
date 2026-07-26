@@ -25,8 +25,7 @@ def create_popup(root, phrases, on_popup_close):
       index = selection[0]
       phrase = phrases[index]
       on_popup_close()
-      insert_text(phrase.content)
-      
+      root.after(50, lambda: insert_text(phrase.content))
 
   def on_hover(event):
     index = listbox.nearest(event.y)
