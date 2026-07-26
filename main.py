@@ -1,9 +1,8 @@
 from core.hotkeys import start_listener
 from core.expander import insert_text
+from features.popup_manager import init_popup_manager, request_popup
 from models.phrase import Phrase
 from storage.file_store import save_to_file, load_from_file
-
-from features.popup import show_popup
 
 phrase1 = Phrase(
   "IKEA sim i post", 
@@ -50,13 +49,15 @@ hotkeys = load_from_file()
 def handle_hotkey(hotkey):
   if hotkey in hardcoded_testdata:
     phrases = hardcoded_testdata[hotkey]
-    show_popup(phrases)
+    request_popup(phrases)
   else: save_to_file(hardcoded_testdata)# This line should not be in production code
 
 
 
 def main():
+  root = init_popup_manager()
   start_listener(handle_hotkey)
+  root.mainloop()  # Start the Tkinter main loop 
 
 if __name__ == "__main__":
   main()

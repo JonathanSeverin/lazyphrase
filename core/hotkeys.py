@@ -61,7 +61,6 @@ def start_listener(on_hotkey):
     on_release=on_release
   )
   listener.start()
-  listener.join()
 
 
 """  
