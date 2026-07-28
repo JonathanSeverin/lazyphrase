@@ -1,5 +1,4 @@
 TODO:
-* Storage --> saving and loding from/to disk
 * UI for showing phrase content when a listbox item is hovered over
 * Make ui popup placement savable
 * UI for adding/modifying/deleting reposition phrases

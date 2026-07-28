@@ -3,9 +3,13 @@ import tkinter as tk
   
 
 phrase_manager_window = None
+root = None
 
 def init_phrase_manager(main_root):
   global phrase_manager_window
+  global root
+
+  root = main_root
 
   phrase_manager_window = tk.Toplevel(main_root)
   phrase_manager_window.title("Phrase Manager")
@@ -74,6 +78,11 @@ def init_phrase_manager(main_root):
   import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
   import_button.pack(side=tk.LEFT, padx=5, pady=5)
 
+  phrase_manager_window.protocol(
+    "WM_DELETE_WINDOW", 
+    on_close
+  )
+
 
 
 
@@ -83,4 +92,7 @@ def show_phrase_manager():
     phrase_manager_window.deiconify()  # Show the window
     phrase_manager_window.lift()  
     phrase_manager_window.focus_force()  
-  
+
+
+def on_close():
+  root.destroy()  # Close the main application window
