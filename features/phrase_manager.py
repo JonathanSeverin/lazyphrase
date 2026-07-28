@@ -1,15 +1,20 @@
 ## Main UI window for managing phrases
+from operator import index
 import tkinter as tk
+from storage.file_store import save_to_file, load_from_file
   
 
 phrase_manager_window = None
 root = None
+phrases = None
 
 def init_phrase_manager(main_root):
   global phrase_manager_window
   global root
+  global phrases
 
   root = main_root
+  phrases = load_from_file()  
 
   phrase_manager_window = tk.Toplevel(main_root)
   phrase_manager_window.title("Phrase Manager")
@@ -24,6 +29,10 @@ def init_phrase_manager(main_root):
 
   listbox = tk.Listbox(leftframe)
   listbox.pack(fill=tk.BOTH, expand=True)
+
+  for p in phrases.values():
+    for phrase in p:
+      listbox.insert(tk.END, phrase.title)
 
 
   rightframe = tk.Frame(phrase_manager_window)
@@ -78,6 +87,40 @@ def init_phrase_manager(main_root):
   import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
   import_button.pack(side=tk.LEFT, padx=5, pady=5)
 
+
+
+  # Bindings
+
+  
+
+
+
+
+  # Functions
+
+  def on_phrase_selected(event):
+    selection = listbox.curselection()
+    if not selection:
+     return
+
+    index = selection[0]
+    phrase = phrases[index]
+
+    phrase_title_entry.delete(0, tk.END)
+    phrase_title_entry.insert(0, phrase.title)
+
+    phrase_content_text.delete("1.0", tk.END)
+    phrase_content_text.insert(tk.END, phrase.content)
+
+
+  listbox.bind("<<ListboxSelect>>", on_phrase_selected)
+
+
+
+
+
+
+
   phrase_manager_window.protocol(
     "WM_DELETE_WINDOW", 
     on_close
@@ -86,7 +129,7 @@ def init_phrase_manager(main_root):
 
 
 
-def show_phrase_manager():
+def show_phrase_manager(): # not used as of now
   global phrase_manager_window
   if phrase_manager_window is not None:
     phrase_manager_window.deiconify()  # Show the window
@@ -94,5 +137,6 @@ def show_phrase_manager():
     phrase_manager_window.focus_force()  
 
 
+# Close the main application window, and further the whole application
 def on_close():
-  root.destroy()  # Close the main application window
+  root.destroy()  
