@@ -14,7 +14,7 @@ path = (
 path.parent.mkdir(parents=True, exist_ok=True)  # Ensure the directory exists
 
 
-def save_to_file(data):
+def save_phrases(data):
   try:
     with open(path, "w") as f:
       destruct = []
@@ -31,16 +31,12 @@ def save_to_file(data):
     print(f"Could not save phrases to file {e}")
   
 
-def load_from_file():
+def load_phrases():
   try:
     with open(path, "r") as f:
       loaded = json.load(f)
-      dict_to_phrase = [Phrase(**phrase) for phrase in loaded]
-      out_dict = {}
-      for p in dict_to_phrase:
-        if p.hotkey in out_dict: out_dict[p.hotkey].append(p)
-        else: out_dict[p.hotkey] = [p]
-      return out_dict
-  except (FileNotFoundError, json.JSONDecodeError) as e: 
-    print(f"Could not load phrases from file {e}")
-    return {}
+      out = [Phrase(**phrase) for phrase in loaded]
+      return out
+  except (FileNotFoundError, json.JSONDecodeError) as e:
+    print(f"Could not load phrase list from file {e}")
+    return []

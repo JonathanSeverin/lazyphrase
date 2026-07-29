@@ -1,7 +1,7 @@
 ## Main UI window for managing phrases
 from operator import index
 import tkinter as tk
-from storage.file_store import save_to_file, load_from_file
+from storage.file_store import save_phrases, load_phrases
   
 
 phrase_manager_window = None
@@ -14,7 +14,7 @@ def init_phrase_manager(main_root):
   global phrases
 
   root = main_root
-  phrases = load_from_file()  
+  phrases = load_phrases()  
 
   phrase_manager_window = tk.Toplevel(main_root)
   phrase_manager_window.title("Phrase Manager")
@@ -30,9 +30,8 @@ def init_phrase_manager(main_root):
   listbox = tk.Listbox(leftframe)
   listbox.pack(fill=tk.BOTH, expand=True)
 
-  for p in phrases.values():
-    for phrase in p:
-      listbox.insert(tk.END, phrase.title)
+  for p in phrases:
+    listbox.insert(tk.END, p.title)
 
 
   rightframe = tk.Frame(phrase_manager_window)
@@ -127,6 +126,12 @@ def init_phrase_manager(main_root):
   )
 
 
+def convert_to_phrase_dict(phrase_list):
+  out_dict = {}
+  for p in phrase_list:
+    if p.hotkey in out_dict: out_dict[p.hotkey].append(p)
+    else: out_dict[p.hotkey] = [p]
+  return out_dict
 
 
 def show_phrase_manager(): # not used as of now

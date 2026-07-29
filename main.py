@@ -4,7 +4,7 @@ from core.hotkeys import start_listener
 from features.popup_manager import init_popup_manager, request_popup
 from features.phrase_manager import init_phrase_manager
 from models.phrase import Phrase
-from storage.file_store import save_to_file, load_from_file
+from storage.file_store import save_phrases, load_phrases
 
 phrase1 = Phrase(
   "IKEA sim i post", 
@@ -44,7 +44,7 @@ hardcoded_testdata = {
   "a+shift": [phrase3, phrase4],  # Example of multiple phrases for the same hotkey
 } 
 
-hotkeys = load_from_file()
+hotkeys = load_phrases()
 
 
 
@@ -52,7 +52,7 @@ def handle_hotkey(hotkey):
   if hotkey in hardcoded_testdata:
     phrases = hardcoded_testdata[hotkey]
     request_popup(phrases)
-  else: save_to_file(hardcoded_testdata)# This line should not be in production code
+  else: save_phrases(hardcoded_testdata)# This line should not be in production code
 
 
 
