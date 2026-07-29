@@ -7,11 +7,14 @@ from storage.file_store import save_phrases, load_phrases
 phrase_manager_window = None
 root = None
 phrases = None
+clicked_phrase = None # holds the index of the clicked phrase
 
 def init_phrase_manager(main_root):
   global phrase_manager_window
   global root
   global phrases
+
+  
 
   root = main_root
   phrases = load_phrases()  
@@ -112,21 +115,33 @@ def init_phrase_manager(main_root):
     hotkey_entry.insert(0, phrase.hotkey[0])
 
 
-  def on_save_clicked(event):
+  def on_phrase_clicked(event):
+    global clicked_phrase
     selection = listbox.curselection()
-    if not selection:
-      return # Should not be possible for a phrase not to be selected when save is pressed
-
-    index = selection[0]
-    phrase = phrases[index]
+    if selection:
+      clicked_phrase = selection[0]
 
 
+  def on_save_clicked(event):
+    phrase = phrases[clicked_phrase]
 
+    listbox.delete(clicked_phrase)
+    listbox.insert(clicked_phrase, phrase_title_entry.get())
+
+    phrase.title = phrase_title_entry.get()
+    phrase.content = phrase_content_text.get("1.0", tk.END).strip()
+    phrase.hotkey = "alt+" + hotkey_entry.get()
+
+    save_phrases(phrases)
+
+
+# må valider at hotkey_entry.get() is a single character and not empty
 
 
 
   # Bindings
-  listbox.bind("<<ListboxSelect>>", on_phrase_selected)
+  listbox.bind("<<ListboxSelect>>", on_phrase_clicked)
+  listbox.bind("<<ListboxSelect>>", on_phrase_selected, add="+")  # Add the new binding without replacing the existing one
   save_button.bind("<Button-1>", on_save_clicked)
 
 
