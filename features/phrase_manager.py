@@ -67,11 +67,14 @@ def init_phrase_manager(main_root):
 
 
 
-  char_button = tk.Button(hotkeyframe, text="Set Hotkey", command=lambda: print("Set Hotkey clicked"))
+  char_button = tk.Button(hotkeyframe, text="Alt")
   char_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-  hotkey_button = tk.Button(hotkeyframe, text="Set Hotkey", command=lambda: print("Set Hotkey clicked"))
-  hotkey_button.pack(side=tk.LEFT, padx=5, pady=5)
+  hotkey_label = tk.Label(hotkeyframe, text="Key:")
+  hotkey_label.pack(side=tk.LEFT, padx=5, pady=5)
+
+  hotkey_entry = tk.Entry(hotkeyframe, width=6)
+  hotkey_entry.pack(side=tk.LEFT)
 
   save_button = tk.Button(actionframe, text="Save", command=lambda: print("Save clicked"))
   save_button.pack(side=tk.LEFT, padx=5, pady=5)
@@ -85,12 +88,6 @@ def init_phrase_manager(main_root):
 
   import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
   import_button.pack(side=tk.LEFT, padx=5, pady=5)
-
-
-
-  # Bindings
-
-  
 
 
 
@@ -111,10 +108,26 @@ def init_phrase_manager(main_root):
     phrase_content_text.delete("1.0", tk.END)
     phrase_content_text.insert(tk.END, phrase.content)
 
+    hotkey_entry.delete(0, tk.END)
+    hotkey_entry.insert(0, phrase.hotkey[0])
 
+
+  def on_save_clicked(event):
+    selection = listbox.curselection()
+    if not selection:
+      return # Should not be possible for a phrase not to be selected when save is pressed
+
+    index = selection[0]
+    phrase = phrases[index]
+
+
+
+
+
+
+  # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_selected)
-
-
+  save_button.bind("<Button-1>", on_save_clicked)
 
 
 
@@ -140,6 +153,13 @@ def show_phrase_manager(): # not used as of now
     phrase_manager_window.deiconify()  # Show the window
     phrase_manager_window.lift()  
     phrase_manager_window.focus_force()  
+
+
+def get_phrases_dict():
+  phrase_dict = convert_to_phrase_dict(phrases)
+  if not phrase_dict:
+    return {}
+  return phrase_dict
 
 
 # Close the main application window, and further the whole application
