@@ -112,7 +112,7 @@ def init_phrase_manager(main_root):
     phrase_content_text.insert(tk.END, phrase.content)
 
     hotkey_entry.delete(0, tk.END)
-    hotkey_entry.insert(0, phrase.hotkey[0])
+    hotkey_entry.insert(0, phrase.hotkey[-1]) # This implementation only supports hotkeys of the form "alt+<key>". The key HAS to be ONE char. Hotkeys like "alt+shift+<key>" are not supported. T
 
 
   def on_phrase_clicked(event):
