@@ -1,9 +1,25 @@
 from pynput import keyboard
 
 
+# This function takes a set of currently pressed keys and returns a string representation of the hotkey combination. 
+# The keys are sorted in a specific order: modifier keys (ctrl, alt, shift, cmd, win) come first, followed by other keys.
 def build_hotkey_string(current_keys):
-  elements = list(current_keys)
-  elements.sort() # ensures consistent order for the hotkey string (since sets are unordered and could lead to different strings for the same hotkey combination)
+  modifier_order = {
+    "ctrl": 0,
+    "alt": 1,
+    "shift": 2,
+    "cmd": 3,
+    "win": 3,
+  }
+
+  def sort_key(key_name):
+    return (
+      0 if key_name in modifier_order else 1,
+      modifier_order.get(key_name, 99),
+      key_name,
+    )
+
+  elements = sorted(current_keys, key=sort_key)
   return "+".join(elements)
 
 
