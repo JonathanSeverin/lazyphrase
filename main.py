@@ -22,7 +22,7 @@ def main():
   root.withdraw()  # Hide the main window
   init_phrase_manager(root)  
   init_popup_manager(root)
-  start_listener(handle_hotkey)
+  start_listener(handle_hotkey, get_phrases_dict().keys())
   root.mainloop()  # Start the Tkinter main loop 
 
 if __name__ == "__main__":
