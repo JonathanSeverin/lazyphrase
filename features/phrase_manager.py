@@ -123,19 +123,29 @@ def init_phrase_manager(main_root):
 
 
   def on_save_clicked(event):
-    phrase = phrases[clicked_phrase]
+    v_title = validate_phrase_title(phrase_title_entry.get())
+    v_content = validate_phrase_content(phrase_content_text.get("1.0", tk.END).strip())
+    v_hotkey = validate_hotkey(hotkey_entry.get())
 
-    listbox.delete(clicked_phrase)
-    listbox.insert(clicked_phrase, phrase_title_entry.get())
+    if all([v_title, v_content, v_hotkey]):
+      phrase = phrases[clicked_phrase]
 
-    phrase.title = phrase_title_entry.get()
-    phrase.content = phrase_content_text.get("1.0", tk.END).strip()
-    phrase.hotkey = "alt+" + hotkey_entry.get()
+      listbox.delete(clicked_phrase)
+      listbox.insert(clicked_phrase, phrase_title_entry.get())
 
-    save_phrases(phrases)
+      phrase.title = phrase_title_entry.get()
+      phrase.content = phrase_content_text.get("1.0", tk.END).strip()
+      phrase.hotkey = "alt+" + hotkey_entry.get()
 
+      save_phrases(phrases)
+    elif not v_title:
+      print("Invalid title. Please enter a non-empty title with a maximum of 50 characters.")
+    elif not v_content:
+      print("Invalid content. Please enter non-empty content with a maximum of 1000 characters.")
+    elif not v_hotkey:
+      print("Invalid hotkey. Please enter a single character for the hotkey.")
 
-# må valider at hotkey_entry.get() is a single character and not empty
+    # Should display a message box or some other form of feedback to the user instead of just printing to console.
 
 
 
@@ -152,6 +162,28 @@ def init_phrase_manager(main_root):
     "WM_DELETE_WINDOW", 
     on_close
   )
+
+
+def validate_hotkey(hotkey):
+  if len(hotkey) != 1:
+    return False
+  return True
+
+
+def validate_phrase_title(title):
+  if not title.strip():
+    return False
+  elif len(title) > 50:
+    return False
+  return True
+
+
+def validate_phrase_content(content):
+  if not content.strip():
+    return False
+  elif len(content) > 1000:
+    return False
+  return True
 
 
 def convert_to_phrase_dict(phrase_list):
