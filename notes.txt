@@ -2,6 +2,11 @@ TODO:
 * UI for showing phrase content when a listbox item is hovered over
 * Make ui popup placement savable
 * UI for adding/modifying/deleting reposition phrases
+* Make hotkey manager that owns display, root (x11 root, not tkinter), hotkey_lookup and grabbed_hotkeys
+ - Responsible for holding state and register/unregister and reload hotkeys. This is needed in order for the user
+ - to be able to update hotkeys while app is running, and it beeing updated live. 
+ - Current implementation requires app restart when a hotkey is changed, in order for the listeners lookup table to be refreshed 
+ - Finish the MVP before starting on this. Its bearable to restart at this point, but not great for end product
 
 
 Small stuff:
