@@ -1,6 +1,8 @@
 ## Main UI window for managing phrases
 from operator import index
 import tkinter as tk
+import uuid
+from models.phrase import Phrase
 from storage.file_store import save_phrases, load_phrases
   
 
@@ -79,9 +81,6 @@ def init_phrase_manager(main_root):
   hotkey_entry = tk.Entry(hotkeyframe, width=6)
   hotkey_entry.pack(side=tk.LEFT)
 
-  save_button = tk.Button(actionframe, text="Save", command=lambda: print("Save clicked"))
-  save_button.pack(side=tk.LEFT, padx=5, pady=5)
-
   delete_button = tk.Button(actionframe, text="Delete", command=lambda: print("Delete clicked"))
   delete_button.pack(side=tk.LEFT, padx=5, pady=5)
 
@@ -100,11 +99,65 @@ def init_phrase_manager(main_root):
   def on_phrase_selected(event):
     selection = listbox.curselection()
     if not selection:
-     return
+      return
+    load_prases_into_fileds(selection[0])
+   
 
-    index = selection[0]
+  def on_phrase_clicked(event):
+    global clicked_phrase
+    selection = listbox.curselection()
+    if selection:
+      clicked_phrase = selection[0]
+
+
+  def save_phrase_validation(event):
+    v_title = validate_phrase_title(phrase_title_entry.get())
+    v_content = validate_phrase_content(phrase_content_text.get("1.0", tk.END).strip())
+    v_hotkey = validate_hotkey(hotkey_entry.get())
+
+    if all([v_title, v_content, v_hotkey]):
+      return True
+    elif not v_title:
+      print("Invalid title. Maximum of 50 characters.")
+      return False
+    elif not v_content:
+      print("Invalid content. Cannot be more than 1000 characters.")
+      return False
+    elif not v_hotkey:
+      print("Invalid hotkey. Please enter a single character for the hotkey.")
+      return False
+    # Should display a message box or some other form of feedback to the user instead of just printing to console.
+
+
+  def on_create_phrase_clicked(event):
+    global clicked_phrase
+
+    newPhrase = Phrase(
+      title="New Phrase",
+      content="",
+      hotkey="alt+a", # Should improve to be an empty string as default, but the normalization is not implemented for that as of now. Only takes last char as key no matter what it is
+      id=str(uuid.uuid4()),
+      is_active=True
+    )
+    phrases.append(newPhrase)
+
+    # give this phrase focus in the listbox
+    listbox.insert(tk.END, newPhrase.title)
+    listbox.selection_set(tk.END)
+    clicked_phrase = listbox.size() - 1
+
+    load_prases_into_fileds(clicked_phrase)
+    
+    if save_phrase_validation(None):
+      save_phrases(phrases)
+    else:
+      print("Phrase not saved due to validation errors.")
+      # Should dispalay a message box or some other form of feedback to the user instead of just printing to console. Should be coordinated with the validation function to display the specific error message.
+
+  
+  def load_prases_into_fileds(index):
     phrase = phrases[index]
-
+    
     phrase_title_entry.delete(0, tk.END)
     phrase_title_entry.insert(0, phrase.title)
 
@@ -115,53 +168,28 @@ def init_phrase_manager(main_root):
     hotkey_entry.insert(0, phrase.hotkey[-1]) # This implementation only supports hotkeys of the form "alt+<key>". The key HAS to be ONE char. Hotkeys like "alt+shift+<key>" are not supported. T
 
 
-  def on_phrase_clicked(event):
-    global clicked_phrase
-    selection = listbox.curselection()
-    if selection:
-      clicked_phrase = selection[0]
-
-
-  def on_save_clicked(event):
-    v_title = validate_phrase_title(phrase_title_entry.get())
-    v_content = validate_phrase_content(phrase_content_text.get("1.0", tk.END).strip())
-    v_hotkey = validate_hotkey(hotkey_entry.get())
-
-    if all([v_title, v_content, v_hotkey]):
-      phrase = phrases[clicked_phrase]
-
-      listbox.delete(clicked_phrase)
-      listbox.insert(clicked_phrase, phrase_title_entry.get())
-
-      phrase.title = phrase_title_entry.get()
-      phrase.content = phrase_content_text.get("1.0", tk.END).strip()
-      phrase.hotkey = "alt+" + hotkey_entry.get()
-
-      save_phrases(phrases)
-    elif not v_title:
-      print("Invalid title. Please enter a non-empty title with a maximum of 50 characters.")
-    elif not v_content:
-      print("Invalid content. Please enter non-empty content with a maximum of 1000 characters.")
-    elif not v_hotkey:
-      print("Invalid hotkey. Please enter a single character for the hotkey.")
-
-    # Should display a message box or some other form of feedback to the user instead of just printing to console.
-
-
-  # def on_create_phrase_clicked():
+  def save_phrase():
+    phrase = phrases[clicked_phrase]
     
+    listbox.delete(clicked_phrase)
+    listbox.insert(clicked_phrase, phrase_title_entry.get())
 
+    phrase.title = phrase_title_entry.get()
+    phrase.content = phrase_content_text.get("1.0", tk.END).strip()
+    phrase.hotkey = "alt+" + hotkey_entry.get()
+
+    save_phrases(phrases)
 
 
 
   # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_clicked)
   listbox.bind("<<ListboxSelect>>", on_phrase_selected, add="+")  # Add the new binding without replacing the existing one
-  save_button.bind("<Button-1>", on_save_clicked)
+  create_button.bind("<Button-1>", on_create_phrase_clicked)
 
 
-
-
+# on_focus_out for title, content and hotkey should trigger save_phrase_validation and then save the phrase if valid.
+# Same goes for on_create_phrase_clicked and on_delete_phrase_clicked. They should validate the phrase before saving or deleting.
 
   phrase_manager_window.protocol(
     "WM_DELETE_WINDOW", 
@@ -170,23 +198,19 @@ def init_phrase_manager(main_root):
 
 
 def validate_hotkey(hotkey):
-  if len(hotkey) != 1:
+  if len(hotkey) > 1:
     return False
   return True
 
 
 def validate_phrase_title(title):
-  if not title.strip():
-    return False
-  elif len(title) > 50:
+  if len(title) > 50:
     return False
   return True
 
 
 def validate_phrase_content(content):
-  if not content.strip():
-    return False
-  elif len(content) > 1000:
+  if len(content) > 1000:
     return False
   return True
 
