@@ -23,6 +23,7 @@ def save_phrases(data):
           "title": phrase.title,
           "content": phrase.content,
           "hotkey": phrase.hotkey,
+          "id": phrase.id,
           "is_active": phrase.is_active
         })
       json.dump(destruct, f, indent=2, ensure_ascii=False)

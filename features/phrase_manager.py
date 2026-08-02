@@ -148,6 +148,11 @@ def init_phrase_manager(main_root):
     # Should display a message box or some other form of feedback to the user instead of just printing to console.
 
 
+  # def on_create_phrase_clicked():
+    
+
+
+
 
   # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_clicked)
