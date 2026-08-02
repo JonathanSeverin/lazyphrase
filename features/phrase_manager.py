@@ -97,17 +97,24 @@ def init_phrase_manager(main_root):
   # Functions
 
   def on_phrase_selected(event):
+    global clicked_phrase
+
     selection = listbox.curselection()
     if not selection:
       return
-    load_prases_into_fileds(selection[0])
-   
 
-  def on_phrase_clicked(event):
-    global clicked_phrase
-    selection = listbox.curselection()
-    if selection:
-      clicked_phrase = selection[0]
+    new_index = selection[0]
+
+    if clicked_phrase is not None and clicked_phrase != new_index:
+      if save_phrase_validation(event):
+        save_phrase()
+      else:
+        print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
+
+    clicked_phrase = new_index
+    load_prases_into_fileds(clicked_phrase)
+   
+    
 
 
   def save_phrase_validation(event):
@@ -127,6 +134,14 @@ def init_phrase_manager(main_root):
       print("Invalid hotkey. Please enter a single character for the hotkey.")
       return False
     # Should display a message box or some other form of feedback to the user instead of just printing to console.
+
+
+  def on_inputfields_focus_out(event):
+    if save_phrase_validation(event):
+      save_phrase()
+      load_prases_into_fileds(clicked_phrase)
+    else:
+      print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
 
   def on_create_phrase_clicked(event):
@@ -181,11 +196,12 @@ def init_phrase_manager(main_root):
     save_phrases(phrases)
 
 
-
   # Bindings
-  listbox.bind("<<ListboxSelect>>", on_phrase_clicked)
-  listbox.bind("<<ListboxSelect>>", on_phrase_selected, add="+")  # Add the new binding without replacing the existing one
+  listbox.bind("<<ListboxSelect>>", on_phrase_selected)  
   create_button.bind("<Button-1>", on_create_phrase_clicked)
+  phrase_title_entry.bind("<FocusOut>", on_inputfields_focus_out)
+  phrase_content_text.bind("<FocusOut>", on_inputfields_focus_out)
+  hotkey_entry.bind("<FocusOut>", on_inputfields_focus_out)
 
 
 # on_focus_out for title, content and hotkey should trigger save_phrase_validation and then save the phrase if valid.
