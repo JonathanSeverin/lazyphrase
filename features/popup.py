@@ -5,15 +5,14 @@ from core.expander import insert_text
 
 
 
-def create_popup(root, phrases, on_popup_close, on_popup_coordinates_update=None, initial_position=None):
+def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, initial_geometry=None):
   
   toplvl = tk.Toplevel(root)
   toplvl.minsize(150, 200)
   width = 250
   height = 300
-  if initial_position is not None:
-    x, y = initial_position
-    toplvl.geometry(f"{width}x{height}+{x}+{y}")
+  if initial_geometry is not None:
+    toplvl.geometry(initial_geometry)
   else:
     toplvl.geometry(f"{width}x{height}")
    
@@ -81,8 +80,8 @@ def create_popup(root, phrases, on_popup_close, on_popup_coordinates_update=None
   def flush_coordinates_update():
     nonlocal pending_coordinates_update
 
-    if on_popup_coordinates_update is not None:
-      on_popup_coordinates_update(toplvl.winfo_x(), toplvl.winfo_y())
+    if on_popup_geometry_update is not None:
+      on_popup_geometry_update(toplvl.geometry())
 
     pending_coordinates_update = None
 

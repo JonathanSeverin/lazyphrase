@@ -5,7 +5,7 @@ from features.popup import create_popup
 
 root = None
 top_level_popup = None  # Global variable to keep track of the current popup window
-popup_coordinates = None  # Global variable to store the coordinates of the popup window
+popup_geometry = None  # Global variable to store the popup window geometry
 
 def init_popup_manager(main_root):
     global root
@@ -27,14 +27,14 @@ def process_popup_request(phrases):
         root,
         phrases,
         on_popup_close,
-        on_popup_coordinates_update,
-        popup_coordinates,
+        on_popup_geometry_update,
+        popup_geometry,
     )  # Call the function to create the popup window
 
 
-def on_popup_coordinates_update(x, y):
-    global popup_coordinates
-    popup_coordinates = (x, y)  # Update the global variable with the new coordinates
+def on_popup_geometry_update(geometry):
+    global popup_geometry
+    popup_geometry = geometry  # Update the global variable with the new popup geometry
 
 
 def on_popup_close():
