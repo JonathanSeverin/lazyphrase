@@ -1,14 +1,21 @@
-TODO:
+TODO main priority
+* If title is left empty, should default to "New Phrase" on focus lost
+* alt+æ/ø/å/' issues hotkey issues. Go through ".,-<" aswell
+* Add deletion of phrases
+
+UX improvements
+* If only one phrase on that hotkye comobo --> paste text directly without opening popup
+* Implement sorting of phrases based on hotkey
 * UI for showing phrase content when a listbox item is hovered over
-* Make ui popup placement savable
-* UI for adding/modifying/deleting reposition phrases
-* Make hotkey manager that owns display, root (x11 root, not tkinter), hotkey_lookup and grabbed_hotkeys
- - Responsible for holding state and register/unregister and reload hotkeys. This is needed in order for the user
- - to be able to update hotkeys while app is running, and it beeing updated live. 
- - Current implementation requires app restart when a hotkey is changed, in order for the listeners lookup table to be refreshed 
- - Finish the MVP before starting on this. Its bearable to restart at this point, but not great for end product
+* UI for adding/modifying/deleting reposition phrases. Folder structure
 
 
 Small stuff:
 * Add to main README that you need to install xclip for pyperclip to work?
-* If only one phrase on that hotkye comobo --> paste text directly without opening popup
+
+
+Issues that are not prioritized
+* If you change a phrase's title/content/hotkey and click on that phrase in the list view, the changes will not be saved
+This is caused by a check when pressing in the listbox. If the phrase is the same as the previous clicked phrase, do not save. If I remove that
+check it solves the problem, but then Im saving each phrase everytime I switch phrase (even if nothing was changed).
+So would need a dirty flag to fix it in a more solid manner. Do not care as of now
