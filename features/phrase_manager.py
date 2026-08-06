@@ -112,7 +112,7 @@ def init_phrase_manager(main_root):
         print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
     clicked_phrase = new_index
-    load_prases_into_fileds(clicked_phrase)
+    load_prases_into_fields(clicked_phrase)
    
     
 
@@ -139,7 +139,7 @@ def init_phrase_manager(main_root):
   def on_inputfields_focus_out(event):
     if save_phrase_validation(event):
       save_phrase()
-      load_prases_into_fileds(clicked_phrase)
+      load_prases_into_fields(clicked_phrase)
     else:
       print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
@@ -161,7 +161,7 @@ def init_phrase_manager(main_root):
     listbox.selection_set(tk.END)
     clicked_phrase = listbox.size() - 1
 
-    load_prases_into_fileds(clicked_phrase)
+    load_prases_into_fields(clicked_phrase)
     
     if save_phrase_validation(None):
       save_phrases(phrases)
@@ -170,7 +170,7 @@ def init_phrase_manager(main_root):
       # Should dispalay a message box or some other form of feedback to the user instead of just printing to console. Should be coordinated with the validation function to display the specific error message.
 
   
-  def load_prases_into_fileds(index):
+  def load_prases_into_fields(index):
     phrase = phrases[index]
     
     phrase_title_entry.delete(0, tk.END)
@@ -187,9 +187,9 @@ def init_phrase_manager(main_root):
     phrase = phrases[clicked_phrase]
     
     listbox.delete(clicked_phrase)
-    listbox.insert(clicked_phrase, phrase_title_entry.get())
+    listbox.insert(clicked_phrase, phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase") # If the title is empty, set it to "New Phrase"
 
-    phrase.title = phrase_title_entry.get()
+    phrase.title = phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase" # If the title is empty, update the phrase title itsle, not just the listbox entry"
     phrase.content = phrase_content_text.get("1.0", tk.END).strip()
     phrase.hotkey = "alt+" + hotkey_entry.get()
 
@@ -256,4 +256,8 @@ def get_phrases_dict():
 
 # Close the main application window, and further the whole application
 def on_close():
+  try:
+    save_phrases(phrases)
+  except Exception as e:
+    print(f"Could not save phrases: {e}")
   root.destroy()  
