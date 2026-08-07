@@ -1,5 +1,4 @@
 TODO main priority
-* alt+æ/ø/å/' issues hotkey issues. Go through ".,-<" aswell
 * Add deletion of phrases
 
 UX improvements
