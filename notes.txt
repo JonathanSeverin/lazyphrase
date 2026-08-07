@@ -1,5 +1,4 @@
 TODO main priority
-* If title is left empty, should default to "New Phrase" on focus lost
 * alt+æ/ø/å/' issues hotkey issues. Go through ".,-<" aswell
 * Add deletion of phrases
 

@@ -12,6 +12,16 @@ except ImportError:
 
 MODIFIER_MASKS = {}
 IGNORED_STATE_MASKS = 0
+KEY_NAME_ALIASES = {
+  "+": "plus",
+  "\\": "backslash",
+  ".": "period",
+  ",": "comma",
+  "-": "minus",
+  "<": "less",
+  "'": "apostrophe",
+}
+DISPLAY_KEY_NAME_ALIASES = {value: key for key, value in KEY_NAME_ALIASES.items()}
 
 if X is not None:
   MODIFIER_MASKS = {
@@ -49,7 +59,7 @@ def normalize_key(key):
 
   try:
     if key.char:
-      return str(key.char).lower()
+      return normalize_key_name(str(key.char).lower())
   except AttributeError:
     pass
 
@@ -60,7 +70,21 @@ def normalize_key(key):
     if temp.endswith("_l") or temp.endswith("_r"):
       temp = temp[:-2]
 
-  return temp.lower() if temp else str(key).lower()
+  return normalize_key_name(temp.lower() if temp else str(key).lower())
+
+
+def normalize_key_name(key_name):
+  if not key_name:
+    return None
+
+  return KEY_NAME_ALIASES.get(key_name, key_name)
+
+
+def display_key_name(key_name):
+  if not key_name:
+    return ""
+
+  return DISPLAY_KEY_NAME_ALIASES.get(key_name, key_name)
 
 
 def start_listener(on_hotkey, hotkeys=None):
@@ -172,12 +196,29 @@ def start_fallback_listener(on_hotkey):
 
 
 def parse_hotkey(hotkey):
-  parts = [part.strip().lower() for part in hotkey.split("+") if part.strip()]
+  parts = [part.strip().lower() for part in hotkey.split("+")]
   if len(parts) < 2:
     return None, None
 
-  modifiers = parts[:-1]
-  key_name = parts[-1]
+  modifiers = []
+  key_parts = []
+
+  for part in parts:
+    if key_parts:
+      key_parts.append(part)
+      continue
+
+    if part in MODIFIER_MASKS:
+      modifiers.append(part)
+    else:
+      key_parts.append(part)
+
+  if not modifiers or not key_parts:
+    return None, None
+
+  key_name = normalize_key_name("+".join(key_parts).strip())
+  if not key_name:
+    return None, None
 
   for modifier in modifiers:
     if modifier not in MODIFIER_MASKS:
@@ -224,6 +265,9 @@ def keysym_for_key_name(key_name):
     "down": "Down",
     "left": "Left",
     "right": "Right",
+    "æ": "ae",
+    "ø": "oslash",
+    "å": "aring",
   }
 
   lookup_name = special_names.get(key_name, key_name)
@@ -248,4 +292,4 @@ def hotkey_from_event(x_display, event):
   if key_name is None:
     return None
 
-  return "+".join([*modifiers, key_name.lower()])
+  return "+".join([*modifiers, normalize_key_name(key_name.lower())])

@@ -11,6 +11,18 @@ root = None
 phrases = None
 clicked_phrase = None # holds the index of the clicked phrase
 
+HOTKEY_KEY_ALIASES = {
+  "+": "plus",
+  "\\": "backslash",
+  ".": "period",
+  ",": "comma",
+  "-": "minus",
+  "<": "less",
+  "'": "apostrophe",
+}
+
+HOTKEY_DISPLAY_ALIASES = {value: key for key, value in HOTKEY_KEY_ALIASES.items()}
+
 def init_phrase_manager(main_root):
   global phrase_manager_window
   global root
@@ -180,7 +192,7 @@ def init_phrase_manager(main_root):
     phrase_content_text.insert(tk.END, phrase.content)
 
     hotkey_entry.delete(0, tk.END)
-    hotkey_entry.insert(0, phrase.hotkey[-1]) # This implementation only supports hotkeys of the form "alt+<key>". The key HAS to be ONE char. Hotkeys like "alt+shift+<key>" are not supported. T
+    hotkey_entry.insert(0, extract_hotkey_key(phrase.hotkey))
 
 
   def save_phrase():
@@ -191,7 +203,7 @@ def init_phrase_manager(main_root):
 
     phrase.title = phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase" # If the title is empty, update the phrase title itsle, not just the listbox entry"
     phrase.content = phrase_content_text.get("1.0", tk.END).strip()
-    phrase.hotkey = "alt+" + hotkey_entry.get()
+    phrase.hotkey = build_hotkey_value(hotkey_entry.get())
 
     save_phrases(phrases)
 
@@ -217,6 +229,55 @@ def validate_hotkey(hotkey):
   if len(hotkey) > 1:
     return False
   return True
+
+
+def normalize_hotkey_key(key_text):
+  if not key_text:
+    return ""
+
+  return HOTKEY_KEY_ALIASES.get(key_text.strip().lower(), key_text.strip().lower())
+
+
+def display_hotkey_key(key_name):
+  if not key_name:
+    return ""
+
+  return HOTKEY_DISPLAY_ALIASES.get(key_name, key_name)
+
+
+def build_hotkey_value(key_text):
+  normalized_key = normalize_hotkey_key(key_text)
+  if not normalized_key:
+    return None
+
+  return f"alt+{normalized_key}"
+
+
+def extract_hotkey_key(hotkey):
+  if not hotkey:
+    return ""
+
+  parts = [part.strip().lower() for part in hotkey.split("+")]
+  if len(parts) < 2:
+    return ""
+
+  modifiers = []
+  key_parts = []
+
+  for part in parts:
+    if key_parts:
+      key_parts.append(part)
+      continue
+
+    if part in ("ctrl", "alt", "shift", "cmd", "win"):
+      modifiers.append(part)
+    else:
+      key_parts.append(part)
+
+  if not modifiers or not key_parts:
+    return ""
+
+  return display_hotkey_key(normalize_hotkey_key("+".join(key_parts).strip()))
 
 
 def validate_phrase_title(title):
