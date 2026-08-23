@@ -208,9 +208,34 @@ def init_phrase_manager(main_root):
     save_phrases(phrases)
 
 
+  def on_delete_phrase_clicked(event):
+    global clicked_phrase
+
+    selection = listbox.curselection()
+    if not selection:
+      return
+
+    index = selection[0]
+    del phrases[index]
+    listbox.delete(index)
+
+    size = listbox.size()
+    if size == 0:
+      clicked_phrase = None
+      phrase_title_entry.delete(0, tk.END)
+      phrase_content_text.delete("1.0", tk.END)
+      hotkey_entry.delete(0, tk.END)
+    else:
+      new_index = index if index < size else size - 1
+      listbox.selection_set(new_index)
+      clicked_phrase = new_index
+      load_prases_into_fields(clicked_phrase)
+
+
   # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_selected)  
   create_button.bind("<Button-1>", on_create_phrase_clicked)
+  delete_button.bind("<Button-1>", on_delete_phrase_clicked)
   phrase_title_entry.bind("<FocusOut>", on_inputfields_focus_out)
   phrase_content_text.bind("<FocusOut>", on_inputfields_focus_out)
   hotkey_entry.bind("<FocusOut>", on_inputfields_focus_out)

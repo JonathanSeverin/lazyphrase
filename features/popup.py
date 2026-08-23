@@ -25,7 +25,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
   for c, phrase in enumerate(phrases):
     listbox.insert(c, phrase.title)
 
-  listbox.selection_set(0)  # Select the first item by default
+  listbox.selection_set(0)  
   listbox.focus_set()  # Set focus to the listbox so it can receive keyboard events
 
   
