@@ -5,6 +5,7 @@ TODO main priority
 
 UX improvements
 * UI for adding/modifying/deleting reposition phrases. Folder structure
+* Add a max width to the popup
 
 
 Small stuff:

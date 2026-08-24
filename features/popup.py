@@ -2,6 +2,7 @@ import tkinter as tk
 import pynput
 
 from core.expander import insert_text
+from features.phrase_content_modal import show_modal_content, close_content_modal
 
 
 
@@ -42,6 +43,8 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
     index = listbox.nearest(event.y)
     listbox.selection_clear(0, tk.END)
     listbox.selection_set(index)
+
+    root.after(100, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
   
 
   def on_arrow_key_pressed(event):
@@ -110,6 +113,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
         pass
       mouse_listener = None
 
+    close_content_modal()
     on_popup_close() 
 
 
