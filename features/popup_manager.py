@@ -1,3 +1,4 @@
+from core.expander import insert_text
 import tkinter as tk
 
 from features.popup import create_popup
@@ -23,6 +24,9 @@ def process_popup_request(phrases):
         top_level_popup.destroy() 
         top_level_popup = None
 
+    if len(phrases) == 1:
+        direct_phrase_insertion(phrases[0])  # Directly insert the phrase if there's only one
+        return
     top_level_popup = create_popup(
         root,
         phrases,
@@ -30,6 +34,11 @@ def process_popup_request(phrases):
         on_popup_geometry_update,
         popup_geometry,
     )  # Call the function to create the popup window
+
+
+def direct_phrase_insertion(phrase):
+    global root
+    root.after(50, lambda: insert_text(phrase.content))  # Schedule the text insertion in the main thread
 
 
 def on_popup_geometry_update(geometry):
