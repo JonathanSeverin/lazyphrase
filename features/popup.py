@@ -12,11 +12,22 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
   toplvl.minsize(150, 200)
   width = 250
   height = 300
+  screen_width = root.winfo_screenwidth()
+  screen_height = root.winfo_screenheight()
+  x = (screen_width - width - 1000) // 2 # Center the popup horizontally with a 1000px offset to the left (quickfix fot the popup to not show up on the right monitor, since winfo() is calculating width across both monitors)
+  y = (screen_height - height) // 2
+  
   if initial_geometry is not None:
     toplvl.geometry(initial_geometry)
   else:
-    toplvl.geometry(f"{width}x{height}")
-   
+    toplvl.geometry(f"{width}x{height}+{x}+{y}")
+
+  toplvl.update_idletasks()  # Ensure the geometry is applied before notifying modal
+
+  if on_popup_geometry_update is not None:
+    on_popup_geometry_update(toplvl.geometry())  # Notify the initial geometry, ensuring the modal (displaying phrase content) is positioned correctly
+
+
   listbox = tk.Listbox(toplvl)
   listbox.pack(fill=tk.BOTH, expand=True)
 
