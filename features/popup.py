@@ -39,12 +39,25 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
       root.after(50, lambda: insert_text(phrase.content))
 
 
+  current_hover_index = None  # Track the current hover index to avoid redundant modal updates
+
   def on_hover(event):
+    nonlocal current_hover_index
+
     index = listbox.nearest(event.y)
     listbox.selection_clear(0, tk.END)
     listbox.selection_set(index)
 
-    root.after(100, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
+    if current_hover_index is None:
+      current_hover_index = index
+      root.after(100, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
+      return
+
+    if index == current_hover_index:
+      return  # No change in hover index, do nothing
+
+    current_hover_index = index
+    root.after(200, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
   
 
   def on_arrow_key_pressed(event):
@@ -78,6 +91,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
     y_plus_height = toplvl_y + toplvl_height + 35 # Adjust for title bar height bottom
 
     if not (toplvl_x <= x <= x_plus_width and toplvl_y <= y <= y_plus_height):
+      close_content_modal()
       on_popup_close()
 
 
