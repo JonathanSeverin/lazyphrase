@@ -2,6 +2,7 @@ import tkinter as tk
 import pynput
 
 from core.expander import insert_text
+from features.phrase_content_modal import show_modal_content, close_content_modal
 
 
 
@@ -11,11 +12,22 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
   toplvl.minsize(150, 200)
   width = 250
   height = 300
+  screen_width = root.winfo_screenwidth()
+  screen_height = root.winfo_screenheight()
+  x = (screen_width - width - 1000) // 2 # Center the popup horizontally with a 1000px offset to the left (quickfix fot the popup to not show up on the right monitor, since winfo() is calculating width across both monitors)
+  y = (screen_height - height) // 2
+  
   if initial_geometry is not None:
     toplvl.geometry(initial_geometry)
   else:
-    toplvl.geometry(f"{width}x{height}")
-   
+    toplvl.geometry(f"{width}x{height}+{x}+{y}")
+
+  toplvl.update_idletasks()  # Ensure the geometry is applied before notifying modal
+
+  if on_popup_geometry_update is not None:
+    on_popup_geometry_update(toplvl.geometry())  # Notify the initial geometry, ensuring the modal (displaying phrase content) is positioned correctly
+
+
   listbox = tk.Listbox(toplvl)
   listbox.pack(fill=tk.BOTH, expand=True)
 
@@ -38,10 +50,30 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
       root.after(50, lambda: insert_text(phrase.content))
 
 
+  current_hover_index = None  # Track the current hover index to avoid redundant modal updates
+
   def on_hover(event):
+    nonlocal current_hover_index
+
     index = listbox.nearest(event.y)
     listbox.selection_clear(0, tk.END)
     listbox.selection_set(index)
+
+    bbox = listbox.bbox(index)
+    row_y = listbox.winfo_rooty() + (bbox[1] if bbox else 0)
+    modal_x = toplvl.winfo_rootx() + toplvl.winfo_width() + 15
+    width = toplvl.winfo_width()
+
+    if current_hover_index is None:
+      current_hover_index = index
+      root.after(20, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
+      return
+
+    if index == current_hover_index:
+      return  # No change in hover index, do nothing
+
+    current_hover_index = index
+    root.after(200, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
   
 
   def on_arrow_key_pressed(event):
@@ -75,6 +107,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
     y_plus_height = toplvl_y + toplvl_height + 35 # Adjust for title bar height bottom
 
     if not (toplvl_x <= x <= x_plus_width and toplvl_y <= y <= y_plus_height):
+      close_content_modal()
       on_popup_close()
 
 
@@ -83,6 +116,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
 
     if on_popup_geometry_update is not None:
       on_popup_geometry_update(toplvl.geometry())
+      close_content_modal()
 
     pending_coordinates_update = None
 
@@ -110,6 +144,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
         pass
       mouse_listener = None
 
+    close_content_modal()
     on_popup_close() 
 
 

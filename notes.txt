@@ -1,11 +1,11 @@
 TODO main priority
-* Add deletion of phrases
+* UI for showing phrase content when a listbox item is hovered over
+* Implement sorting of phrases based on hotkey
+
 
 UX improvements
-* If only one phrase on that hotkye comobo --> paste text directly without opening popup
-* Implement sorting of phrases based on hotkey
-* UI for showing phrase content when a listbox item is hovered over
 * UI for adding/modifying/deleting reposition phrases. Folder structure
+* Add a max width to the popup
 
 
 Small stuff:

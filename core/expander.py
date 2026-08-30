@@ -2,6 +2,8 @@ import threading
 import pyperclip
 from pynput.keyboard import Controller, Key
 
+from features.phrase_content_modal import close_content_modal
+
 keyboard = Controller()
 
 def insert_text(text):
@@ -13,6 +15,8 @@ def insert_text(text):
   keyboard.release('v')
   keyboard.release(Key.ctrl)
 
+  close_content_modal()  # Close the modal after inserting the text
+  
   def restore():
     pyperclip.copy(original_clipboard)
 
