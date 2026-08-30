@@ -59,16 +59,21 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
     listbox.selection_clear(0, tk.END)
     listbox.selection_set(index)
 
+    bbox = listbox.bbox(index)
+    row_y = listbox.winfo_rooty() + (bbox[1] if bbox else 0)
+    modal_x = toplvl.winfo_rootx() + toplvl.winfo_width() + 15
+    width = toplvl.winfo_width()
+
     if current_hover_index is None:
       current_hover_index = index
-      root.after(100, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
+      root.after(100, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
       return
 
     if index == current_hover_index:
       return  # No change in hover index, do nothing
 
     current_hover_index = index
-    root.after(200, lambda: show_modal_content(root, phrases[index], toplvl.geometry()))
+    root.after(200, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
   
 
   def on_arrow_key_pressed(event):
