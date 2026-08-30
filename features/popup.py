@@ -116,6 +116,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
 
     if on_popup_geometry_update is not None:
       on_popup_geometry_update(toplvl.geometry())
+      close_content_modal()
 
     pending_coordinates_update = None
 
