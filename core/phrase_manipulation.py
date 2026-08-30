@@ -8,3 +8,7 @@ def delete_phrase():
 def edit_phrase():
   pass
 
+
+
+def filter_phrases(phrases, query):
+  pass

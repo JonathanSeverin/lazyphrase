@@ -123,14 +123,15 @@ def init_phrase_manager(main_root):
       return
 
     new_index = selection[0]
+    new_phrase = phrases[new_index]
 
-    if clicked_phrase is not None and clicked_phrase != new_index:
+    if (clicked_phrase is not None) and (clicked_phrase is not new_phrase):
       if save_phrase_validation(event):
         save_phrase()
       else:
         print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
-    clicked_phrase = new_index
+    clicked_phrase = new_phrase
     load_prases_into_fields(clicked_phrase)
    
     
@@ -178,7 +179,7 @@ def init_phrase_manager(main_root):
     # give this phrase focus in the listbox
     listbox.insert(tk.END, newPhrase.title)
     listbox.selection_set(tk.END)
-    clicked_phrase = listbox.size() - 1
+    clicked_phrase = phrases[listbox.size() - 1]
 
     load_prases_into_fields(clicked_phrase)
     
@@ -189,9 +190,7 @@ def init_phrase_manager(main_root):
       # Should dispalay a message box or some other form of feedback to the user instead of just printing to console. Should be coordinated with the validation function to display the specific error message.
 
   
-  def load_prases_into_fields(index):
-    phrase = phrases[index]
-    
+  def load_prases_into_fields(phrase):
     phrase_title_entry.delete(0, tk.END)
     phrase_title_entry.insert(0, phrase.title)
 
@@ -203,10 +202,11 @@ def init_phrase_manager(main_root):
 
 
   def save_phrase():
-    phrase = phrases[clicked_phrase]
+    phrase = clicked_phrase
+    index = phrases.index(phrase)
     
-    listbox.delete(clicked_phrase)
-    listbox.insert(clicked_phrase, phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase") # If the title is empty, set it to "New Phrase"
+    listbox.delete(index)
+    listbox.insert(index, phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase") # If the title is empty, set it to "New Phrase"
 
     phrase.title = phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase" # If the title is empty, update the phrase title itsle, not just the listbox entry"
     phrase.content = phrase_content_text.get("1.0", tk.END).strip()
@@ -235,7 +235,7 @@ def init_phrase_manager(main_root):
     else:
       new_index = index if index < size else size - 1
       listbox.selection_set(new_index)
-      clicked_phrase = new_index
+      clicked_phrase = phrases[new_index]
       load_prases_into_fields(clicked_phrase)
 
 
