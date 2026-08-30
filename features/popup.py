@@ -66,7 +66,7 @@ def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, i
 
     if current_hover_index is None:
       current_hover_index = index
-      root.after(100, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
+      root.after(20, lambda: show_modal_content(root, phrases[index], modal_x, row_y, width))
       return
 
     if index == current_hover_index:
