@@ -28,8 +28,6 @@ def init_phrase_manager(main_root):
   global root
   global phrases
 
-  
-
   root = main_root
   phrases = load_phrases()  
 
@@ -37,12 +35,26 @@ def init_phrase_manager(main_root):
   phrase_manager_window.title("Phrase Manager")
   phrase_manager_window.geometry("800x500") # Should probably make it more dynamic based on screen size
 
+
   topbar = tk.Frame(phrase_manager_window)
   topbar.pack(side=tk.TOP, fill=tk.X)
+
+  create_button = tk.Button(topbar, text="Create Phrase", command=lambda: print("Create Phrase clicked"))
+  create_button.pack(side=tk.LEFT, padx=5, pady=5)
+  
+  import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
+  import_button.pack(side=tk.LEFT, padx=5, pady=5)
+
 
   leftframe = tk.Frame(phrase_manager_window, width=260)
   leftframe.pack(side=tk.LEFT, fill=tk.Y)
   leftframe.pack_propagate(False)  # Prevent the left frame from resizing based on its content
+
+  search_label = tk.Label(leftframe, text="Search:")
+  search_label.pack(side=tk.TOP, padx=5, pady=5)
+  
+  search_label_entry = tk.Entry(leftframe)
+  search_label_entry.pack(side=tk.TOP, padx=5, pady=5)
 
   listbox = tk.Listbox(leftframe)
   listbox.pack(fill=tk.BOTH, expand=True)
@@ -50,7 +62,7 @@ def init_phrase_manager(main_root):
   for p in phrases:
     listbox.insert(tk.END, p.title)
 
-
+  
   rightframe = tk.Frame(phrase_manager_window)
   rightframe.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
@@ -97,12 +109,7 @@ def init_phrase_manager(main_root):
   delete_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 
-  create_button = tk.Button(topbar, text="Create Phrase", command=lambda: print("Create Phrase clicked"))
-  create_button.pack(side=tk.LEFT, padx=5, pady=5)
-
-  import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
-  import_button.pack(side=tk.LEFT, padx=5, pady=5)
-
+ 
 
 
 
@@ -239,7 +246,7 @@ def init_phrase_manager(main_root):
   phrase_title_entry.bind("<FocusOut>", on_inputfields_focus_out)
   phrase_content_text.bind("<FocusOut>", on_inputfields_focus_out)
   hotkey_entry.bind("<FocusOut>", on_inputfields_focus_out)
-
+  
 
 # on_focus_out for title, content and hotkey should trigger save_phrase_validation and then save the phrase if valid.
 # Same goes for on_create_phrase_clicked and on_delete_phrase_clicked. They should validate the phrase before saving or deleting.
