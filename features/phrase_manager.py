@@ -2,6 +2,7 @@
 from operator import index
 import tkinter as tk
 import uuid
+from core.phrase_manipulation import filter_phrases
 from models.phrase import Phrase
 from storage.file_store import save_phrases, load_phrases
   
@@ -10,6 +11,8 @@ phrase_manager_window = None
 root = None
 phrases = None
 clicked_phrase = None # holds the index of the clicked phrase
+pending_search = None 
+displayed_phrases = None
 
 HOTKEY_KEY_ALIASES = {
   "+": "plus",
@@ -27,9 +30,11 @@ def init_phrase_manager(main_root):
   global phrase_manager_window
   global root
   global phrases
+  global displayed_phrases
 
   root = main_root
   phrases = load_phrases()  
+  displayed_phrases = []
 
   phrase_manager_window = tk.Toplevel(main_root)
   phrase_manager_window.title("Phrase Manager")
@@ -61,6 +66,7 @@ def init_phrase_manager(main_root):
 
   for p in phrases:
     listbox.insert(tk.END, p.title)
+    displayed_phrases.append(p)
 
   
   rightframe = tk.Frame(phrase_manager_window)
@@ -116,14 +122,14 @@ def init_phrase_manager(main_root):
   # Functions
 
   def on_phrase_selected(event):
-    global clicked_phrase
+    global clicked_phrase, displayed_phrases
 
     selection = listbox.curselection()
     if not selection:
       return
 
     new_index = selection[0]
-    new_phrase = phrases[new_index]
+    new_phrase = displayed_phrases[new_index]
 
     if (clicked_phrase is not None) and (clicked_phrase is not new_phrase):
       if save_phrase_validation(event):
@@ -157,6 +163,7 @@ def init_phrase_manager(main_root):
 
 
   def on_inputfields_focus_out(event):
+    global clicked_phrase
     if save_phrase_validation(event):
       save_phrase()
       load_prases_into_fields(clicked_phrase)
@@ -175,11 +182,12 @@ def init_phrase_manager(main_root):
       is_active=True
     )
     phrases.append(newPhrase)
+    displayed_phrases.append(newPhrase)
 
     # give this phrase focus in the listbox
     listbox.insert(tk.END, newPhrase.title)
     listbox.selection_set(tk.END)
-    clicked_phrase = phrases[listbox.size() - 1]
+    clicked_phrase = displayed_phrases[listbox.size() - 1]
 
     load_prases_into_fields(clicked_phrase)
     
@@ -202,12 +210,14 @@ def init_phrase_manager(main_root):
 
 
   def save_phrase():
+    global clicked_phrase
     phrase = clicked_phrase
-    index = phrases.index(phrase)
-    
-    listbox.delete(index)
-    listbox.insert(index, phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase") # If the title is empty, set it to "New Phrase"
 
+    if phrase in displayed_phrases:
+      index = displayed_phrases.index(phrase)
+      listbox.delete(index)
+      listbox.insert(index, phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase") # If the title is empty, set it to "New Phrase"
+  
     phrase.title = phrase_title_entry.get() if phrase_title_entry.get() else "New Phrase" # If the title is empty, update the phrase title itsle, not just the listbox entry"
     phrase.content = phrase_content_text.get("1.0", tk.END).strip()
     phrase.hotkey = build_hotkey_value(hotkey_entry.get())
@@ -223,7 +233,9 @@ def init_phrase_manager(main_root):
       return
 
     index = selection[0]
-    del phrases[index]
+    phrase_to_delete = displayed_phrases[index]
+    del displayed_phrases[index]
+    del phrases[phrases.index(phrase_to_delete)]
     listbox.delete(index)
 
     size = listbox.size()
@@ -235,8 +247,37 @@ def init_phrase_manager(main_root):
     else:
       new_index = index if index < size else size - 1
       listbox.selection_set(new_index)
-      clicked_phrase = phrases[new_index]
+      clicked_phrase = displayed_phrases[new_index]
       load_prases_into_fields(clicked_phrase)
+
+
+  def on_search_key(event):
+    global pending_search
+    if pending_search is not None:
+      root.after_cancel(pending_search)
+    pending_search = root.after(200, apply_search)
+
+    
+
+
+  def apply_search():
+    global displayed_phrases
+    
+    if not phrases:
+      return 
+    
+    if not search_label_entry.get():
+      listbox.delete(0, tk.END)
+      for p in phrases:
+        listbox.insert(tk.END, p.title)
+      return
+
+    search_term = search_label_entry.get().lower()
+    displayed_phrases = filter_phrases(phrases, search_term)
+    listbox.delete(0, tk.END)
+    for p in displayed_phrases:
+      listbox.insert(tk.END, p.title)
+
 
 
   # Bindings
@@ -246,7 +287,7 @@ def init_phrase_manager(main_root):
   phrase_title_entry.bind("<FocusOut>", on_inputfields_focus_out)
   phrase_content_text.bind("<FocusOut>", on_inputfields_focus_out)
   hotkey_entry.bind("<FocusOut>", on_inputfields_focus_out)
-  
+  search_label_entry.bind("<KeyRelease>", on_search_key)
 
 # on_focus_out for title, content and hotkey should trigger save_phrase_validation and then save the phrase if valid.
 # Same goes for on_create_phrase_clicked and on_delete_phrase_clicked. They should validate the phrase before saving or deleting.
