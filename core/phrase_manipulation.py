@@ -8,3 +8,7 @@ def delete_phrase():
 def edit_phrase():
   pass
 
+
+
+def filter_phrases(phrases, query):
+  return [p for p in phrases if query in p.title.lower()]

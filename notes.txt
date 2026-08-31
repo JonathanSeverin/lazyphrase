@@ -1,6 +1,9 @@
 TODO main priority
-* UI for showing phrase content when a listbox item is hovered over
 * Implement sorting of phrases based on hotkey
+* Fix issue when loading app and clicking in the empty input fields to the right (when no phrase is selcted yet)
+* Refactoring functions over to phrase_manipulation
+* Test the app thoroughly
+* Add filtering on the same hotkey, so phrases appear next to other phrases with same hotkey. Both in main view and search view
 
 
 UX improvements
