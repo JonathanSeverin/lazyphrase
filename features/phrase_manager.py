@@ -122,7 +122,7 @@ def init_phrase_manager(main_root):
   # Functions
 
   def on_phrase_selected(event):
-    global clicked_phrase, displayed_phrases
+    global clicked_phrase
 
     selection = listbox.curselection()
     if not selection:
@@ -163,7 +163,6 @@ def init_phrase_manager(main_root):
 
 
   def on_inputfields_focus_out(event):
-    global clicked_phrase
     if save_phrase_validation(event):
       save_phrase()
       load_prases_into_fields(clicked_phrase)
@@ -210,7 +209,6 @@ def init_phrase_manager(main_root):
 
 
   def save_phrase():
-    global clicked_phrase
     phrase = clicked_phrase
 
     if phrase in displayed_phrases:
@@ -258,8 +256,6 @@ def init_phrase_manager(main_root):
     pending_search = root.after(200, apply_search)
 
     
-
-
   def apply_search():
     global displayed_phrases
     

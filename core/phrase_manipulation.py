@@ -11,5 +11,4 @@ def edit_phrase():
 
 
 def filter_phrases(phrases, query):
-  print("CAlled filter_phrases with query:", query)
   return [p for p in phrases if query in p.title.lower()]
