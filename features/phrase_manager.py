@@ -4,9 +4,8 @@ import tkinter as tk
 import uuid
 from core.phrase_manipulation import filter_phrases
 from models.phrase import Phrase
-from storage.file_store import save_phrases, load_phrases
+from storage.file_store import save_phrases, load_phrases, locate_phrase_file
 from core.phrase_manipulation import validate_phrase_title, validate_phrase_content, validate_hotkey, build_hotkey_value, extract_hotkey_key, convert_to_phrase_dict
-  
 
 phrase_manager_window = None
 root = None
@@ -257,23 +256,48 @@ def init_phrase_manager(main_root):
       listbox.insert(tk.END, p.title)
 
 
+  def handle_import(e):
+    global phrases
+
+    path = locate_phrase_file()
+    
+    if path:
+      loaded_phrases = load_phrases(custom_path=path)
+      if loaded_phrases:
+        phrases = loaded_phrases
+        initialize_listbox()
+    else: 
+      # show popup (create error popup modal for multi purpose use) saying it could not load
+      print("Could not load phrases from the selected file.")
+      return
+    
+
+
   # Initiate the listbox with all phrases, and display the first phrase in the right frame if it exists
-  if phrases:
-    for p in phrases:
-      listbox.insert(tk.END, p.title)
-      displayed_phrases.append(p)
-  
-  clicked_phrase = displayed_phrases[0] if displayed_phrases else None
-  
-  if clicked_phrase:
-    load_phrases_into_fields(clicked_phrase)
-    listbox.selection_set(0)  # Select the first phrase in the listbox by default
+  def initialize_listbox():
+    global displayed_phrases, clicked_phrase
 
+    if phrases:
+      if displayed_phrases:
+        displayed_phrases.clear()
+        for i in range(listbox.size()):
+          listbox.delete(0, tk.END)
+      for p in phrases:
+        listbox.insert(tk.END, p.title)
+        displayed_phrases.append(p)
+    
+    clicked_phrase = displayed_phrases[0] if displayed_phrases else None
 
+    if clicked_phrase:
+      load_phrases_into_fields(clicked_phrase)
+      listbox.selection_set(0)  # Select the first phrase in the listbox by default
+
+  initialize_listbox()
 
   # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_selected)  
   create_button.bind("<Button-1>", on_create_phrase_clicked)
+  import_button.bind("<Button-1>", handle_import)
   delete_button.bind("<Button-1>", on_delete_phrase_clicked)
   phrase_title_entry.bind("<FocusOut>", on_inputfields_focus_out)
   phrase_content_text.bind("<FocusOut>", on_inputfields_focus_out)
