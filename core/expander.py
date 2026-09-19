@@ -22,6 +22,7 @@ def insert_text(text):
 
   threading.Timer(0.15, restore).start() # Increase delay if necessary
 
+
 def preserve_clipboard():
   original_clipboard = pyperclip.paste()
   return original_clipboard

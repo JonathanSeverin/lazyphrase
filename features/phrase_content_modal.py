@@ -24,6 +24,7 @@ def show_modal_content(root, phrase, listbox_element_x, listbox_element_y, width
   modal.geometry(f"+{modal_x}+{modal_y}")  # Set the position of the modal, let the size be determined by its content
   modal.deiconify()  # Show the modal after setting its position
 
+
 def close_content_modal():
   global modal
   if modal:

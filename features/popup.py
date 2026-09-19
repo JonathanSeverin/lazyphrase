@@ -5,9 +5,7 @@ from core.expander import insert_text
 from features.phrase_content_modal import show_modal_content, close_content_modal
 
 
-
 def create_popup(root, phrases, on_popup_close, on_popup_geometry_update=None, initial_geometry=None):
-  
   toplvl = tk.Toplevel(root)
   toplvl.minsize(150, 200)
   width = 250

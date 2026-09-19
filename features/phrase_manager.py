@@ -34,10 +34,10 @@ def init_phrase_manager(main_root):
   topbar = tk.Frame(phrase_manager_window)
   topbar.pack(side=tk.TOP, fill=tk.X)
 
-  create_button = tk.Button(topbar, text="Create Phrase", command=lambda: print("Create Phrase clicked"))
+  create_button = tk.Button(topbar, text="Create Phrase")
   create_button.pack(side=tk.LEFT, padx=5, pady=5)
   
-  import_button = tk.Button(topbar, text="Import Phrases", command=lambda: print("Import Phrases clicked"))
+  import_button = tk.Button(topbar, text="Import Phrases")
   import_button.pack(side=tk.LEFT, padx=5, pady=5)
 
 
@@ -101,7 +101,6 @@ def init_phrase_manager(main_root):
   delete_button.pack(side=tk.LEFT, padx=5, pady=5)
 
  
-
 
   def on_phrase_selected(event):
     global clicked_phrase
@@ -272,7 +271,6 @@ def init_phrase_manager(main_root):
       return
     
 
-
   # Initiate the listbox with all phrases, and display the first phrase in the right frame if it exists
   def initialize_listbox():
     global displayed_phrases, clicked_phrase
@@ -311,7 +309,6 @@ def init_phrase_manager(main_root):
     "WM_DELETE_WINDOW", 
     on_close
   )
-
 
 
 def show_phrase_manager(): # not used as of now
