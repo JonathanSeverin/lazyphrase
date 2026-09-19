@@ -1,4 +1,4 @@
-# Phrase Expander
+# Lazyphrase
 
 A lightweight, hotkey-driven text expander for Linux, built with Python and Tkinter.
 
