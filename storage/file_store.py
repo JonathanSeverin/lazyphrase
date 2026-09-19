@@ -3,7 +3,7 @@ from pathlib import Path
 from tkinter import filedialog
 
 from models.phrase import Phrase
-from core.phrase_manipulation import validate_hotkey, validate_phrase_content, validate_phrase_title
+from core.phrase_manipulation import validate_phrase_content, validate_phrase_title
 
 path = (
   Path.home() 
@@ -39,9 +39,14 @@ def load_phrases(custom_path=None):
   try:
     with open(path_to_file, "r") as f:
       loaded = json.load(f)
-      parse_phrase_list(loaded)  # Validate and parse the loaded data
+      if len(loaded) == 0:
+        return []
       out = [Phrase(**phrase) for phrase in loaded]
-      return out
+      result = parse_phrase_list(out)  # Validate and parse the loaded data
+      if result:
+        return out
+      print(f"Invalid phrase data in file {path_to_file}. Please check the file format or the content of the phrases.")
+      return []
   except (FileNotFoundError, json.JSONDecodeError) as e:
     print(f"Could not load phrase list from file {e}")
     return []
@@ -60,62 +65,21 @@ def locate_phrase_file():
     else:
       return None
 
-
-
+  return None
 
 
 def parse_phrase_list(phrase_data):
   if not phrase_data:
-    return []
+    return False
 
+  for p in phrase_data:
+    t = validate_phrase_title(p.title)
+    c = validate_phrase_content(p.content)
+    # no hotkey validation yet, since that would need extraction of the actual key from the hotkey string. Implement later
 
+    if not isinstance(p, Phrase):
+      return False
+    if not t or not c:
+      return False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  """ parsed_phrases = []
-  for phrase in phrase_data:
-    try:
-      parsed_phrase = Phrase(
-        title=phrase.get("title", ""),
-        content=phrase.get("content", ""),
-        hotkey=phrase.get("hotkey", ""),
-        id=phrase.get("id", None),
-        is_active=phrase.get("is_active", True)
-      )
-      parsed_phrases.append(parsed_phrase)
-    except Exception as e:
-      print(f"Error parsing phrase: {e}")
-
-  return parsed_phrases """
-  
-
-
+  return True
