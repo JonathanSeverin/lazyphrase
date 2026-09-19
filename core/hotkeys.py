@@ -23,6 +23,7 @@ KEY_NAME_ALIASES = {
 }
 DISPLAY_KEY_NAME_ALIASES = {value: key for key, value in KEY_NAME_ALIASES.items()}
 
+
 if X is not None:
   MODIFIER_MASKS = {
     "ctrl": X.ControlMask,
@@ -42,6 +43,7 @@ def build_hotkey_string(current_keys):
     "cmd": 3,
     "win": 3,
   }
+
 
   def sort_key(key_name):
     return (
@@ -138,6 +140,7 @@ def start_x11_listener(on_hotkey, hotkeys):
       )
 
   x_display.sync()
+
 
   def event_loop():
     last_hotkey = None
