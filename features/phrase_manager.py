@@ -106,7 +106,6 @@ def init_phrase_manager(main_root):
 
   def on_phrase_selected(event):
     global clicked_phrase
-    print(f"on_phrase_selected triggered. Current clicked_phrase: {clicked_phrase.title if clicked_phrase else 'None'}")
 
     selection = listbox.curselection()
     if not selection:
@@ -114,9 +113,7 @@ def init_phrase_manager(main_root):
 
     new_index = selection[0]
     new_phrase = displayed_phrases[new_index]
-    print(f"New phrase selected: {new_phrase.title} at index {new_index}")
 
-    print(f"Clicked phrase before selection: {clicked_phrase.title if clicked_phrase else 'None'}")
     if (clicked_phrase is not None) and (clicked_phrase is not new_phrase):
       if save_phrase_validation(event):
         print(f"Saving phrase: {clicked_phrase.title}")
@@ -124,7 +121,6 @@ def init_phrase_manager(main_root):
       else:
         print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
-    print(f"Clicked phrase updated from {clicked_phrase.title if clicked_phrase else 'None'} to {new_phrase.title}")
     clicked_phrase = new_phrase
     load_phrases_into_fields(clicked_phrase)
    
@@ -268,7 +264,7 @@ def init_phrase_manager(main_root):
       displayed_phrases.append(p)
   
   clicked_phrase = displayed_phrases[0] if displayed_phrases else None
-  print(f"Clicked phrase loaded at startup: {clicked_phrase.title if clicked_phrase else 'None'}")
+  
   if clicked_phrase:
     load_phrases_into_fields(clicked_phrase)
     listbox.selection_set(0)  # Select the first phrase in the listbox by default
