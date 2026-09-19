@@ -258,27 +258,41 @@ def init_phrase_manager(main_root):
 
   def handle_import(e):
     global phrases
-    global displayed_phrases
 
     path = locate_phrase_file()
+    
     if path:
-      load_phrases()
+      loaded_phrases = load_phrases(custom_path=path)
+      if loaded_phrases:
+        phrases = loaded_phrases
+        initialize_listbox()
+    else: 
+      # show popup (create error popup modal for multi purpose use) saying it could not load
+      print("Could not load phrases from the selected file.")
+      return
     
 
 
   # Initiate the listbox with all phrases, and display the first phrase in the right frame if it exists
-  if phrases:
-    for p in phrases:
-      listbox.insert(tk.END, p.title)
-      displayed_phrases.append(p)
-  
-  clicked_phrase = displayed_phrases[0] if displayed_phrases else None
+  def initialize_listbox():
+    global displayed_phrases, clicked_phrase
 
-  if clicked_phrase:
-    load_phrases_into_fields(clicked_phrase)
-    listbox.selection_set(0)  # Select the first phrase in the listbox by default
+    if phrases:
+      if displayed_phrases:
+        displayed_phrases.clear()
+        for i in range(listbox.size()):
+          listbox.delete(0, tk.END)
+      for p in phrases:
+        listbox.insert(tk.END, p.title)
+        displayed_phrases.append(p)
+    
+    clicked_phrase = displayed_phrases[0] if displayed_phrases else None
 
+    if clicked_phrase:
+      load_phrases_into_fields(clicked_phrase)
+      listbox.selection_set(0)  # Select the first phrase in the listbox by default
 
+  initialize_listbox()
 
   # Bindings
   listbox.bind("<<ListboxSelect>>", on_phrase_selected)  

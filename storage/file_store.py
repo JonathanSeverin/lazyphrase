@@ -48,17 +48,17 @@ def load_phrases(custom_path=None):
 
 
 def locate_phrase_file():
-  dialog = filedialog.askopenfile(
-    "r", filetypes=[("JSON files", "*.json")], 
+  dialog = filedialog.askopenfilename(
+    filetypes=[("JSON files", "*.json")], 
     title="Load Phrases", 
-    initialdir=Path.home()).show()
+    initialdir=Path.home())
   
   if dialog:
-    file_path = Path(dialog.name)
-    if file_path.exists():
+    if isinstance(dialog, str):
+      file_path = Path(dialog)
       return file_path
     else:
-      print(f"Selected file does not exist: {file_path}")
+      return None
 
 
 
@@ -67,5 +67,55 @@ def locate_phrase_file():
 def parse_phrase_list(phrase_data):
   if not phrase_data:
     return []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  """ parsed_phrases = []
+  for phrase in phrase_data:
+    try:
+      parsed_phrase = Phrase(
+        title=phrase.get("title", ""),
+        content=phrase.get("content", ""),
+        hotkey=phrase.get("hotkey", ""),
+        id=phrase.get("id", None),
+        is_active=phrase.get("is_active", True)
+      )
+      parsed_phrases.append(parsed_phrase)
+    except Exception as e:
+      print(f"Error parsing phrase: {e}")
+
+  return parsed_phrases """
+  
 
 
