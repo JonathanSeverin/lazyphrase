@@ -21,6 +21,7 @@ def init_phrase_manager(main_root):
   global root
   global phrases
   global displayed_phrases
+  global clicked_phrase
 
   root = main_root
   phrases = load_phrases()  
@@ -54,11 +55,7 @@ def init_phrase_manager(main_root):
   listbox = tk.Listbox(leftframe)
   listbox.pack(fill=tk.BOTH, expand=True)
 
-  for p in phrases:
-    listbox.insert(tk.END, p.title)
-    displayed_phrases.append(p)
 
-  
   rightframe = tk.Frame(phrase_manager_window)
   rightframe.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
@@ -104,10 +101,8 @@ def init_phrase_manager(main_root):
   delete_button = tk.Button(actionframe, text="Delete", command=lambda: print("Delete clicked"))
   delete_button.pack(side=tk.LEFT, padx=5, pady=5)
 
-
  
 
-  # Functions
 
   def on_phrase_selected(event):
     global clicked_phrase
@@ -121,12 +116,13 @@ def init_phrase_manager(main_root):
 
     if (clicked_phrase is not None) and (clicked_phrase is not new_phrase):
       if save_phrase_validation(event):
+        print(f"Saving phrase: {clicked_phrase.title}")
         save_phrase()
       else:
         print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
     clicked_phrase = new_phrase
-    load_prases_into_fields(clicked_phrase)
+    load_phrases_into_fields(clicked_phrase)
    
     
   def save_phrase_validation(event):
@@ -151,7 +147,7 @@ def init_phrase_manager(main_root):
   def on_inputfields_focus_out(event):
     if save_phrase_validation(event):
       save_phrase()
-      load_prases_into_fields(clicked_phrase)
+      load_phrases_into_fields(clicked_phrase)
     else:
       print("Could not save phrases") # again -> popup window or standard error message fro not beeing able to save
 
@@ -174,7 +170,7 @@ def init_phrase_manager(main_root):
     listbox.selection_set(tk.END)
     clicked_phrase = displayed_phrases[listbox.size() - 1]
 
-    load_prases_into_fields(clicked_phrase)
+    load_phrases_into_fields(clicked_phrase)
     
     if save_phrase_validation(None):
       save_phrases(phrases)
@@ -183,7 +179,7 @@ def init_phrase_manager(main_root):
       # Should dispalay a message box or some other form of feedback to the user instead of just printing to console. Should be coordinated with the validation function to display the specific error message.
 
   
-  def load_prases_into_fields(phrase):
+  def load_phrases_into_fields(phrase):
     phrase_title_entry.delete(0, tk.END)
     phrase_title_entry.insert(0, phrase.title)
 
@@ -232,7 +228,7 @@ def init_phrase_manager(main_root):
       new_index = index if index < size else size - 1
       listbox.selection_set(new_index)
       clicked_phrase = displayed_phrases[new_index]
-      load_prases_into_fields(clicked_phrase)
+      load_phrases_into_fields(clicked_phrase)
 
 
   def on_search_key(event):
@@ -259,6 +255,19 @@ def init_phrase_manager(main_root):
     listbox.delete(0, tk.END)
     for p in displayed_phrases:
       listbox.insert(tk.END, p.title)
+
+
+  # Initiate the listbox with all phrases, and display the first phrase in the right frame if it exists
+  if phrases:
+    for p in phrases:
+      listbox.insert(tk.END, p.title)
+      displayed_phrases.append(p)
+  
+  clicked_phrase = displayed_phrases[0] if displayed_phrases else None
+  
+  if clicked_phrase:
+    load_phrases_into_fields(clicked_phrase)
+    listbox.selection_set(0)  # Select the first phrase in the listbox by default
 
 
 
