@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
+from tkinter import filedialog
 
 from models.phrase import Phrase
+from core.phrase_manipulation import validate_hotkey, validate_phrase_content, validate_phrase_title
 
 path = (
   Path.home() 
@@ -31,12 +33,39 @@ def save_phrases(data):
     print(f"Could not save phrases to file {e}")
   
 
-def load_phrases():
+def load_phrases(custom_path=None):
+  path_to_file = path if custom_path is None else custom_path
+
   try:
-    with open(path, "r") as f:
+    with open(path_to_file, "r") as f:
       loaded = json.load(f)
+      parse_phrase_list(loaded)  # Validate and parse the loaded data
       out = [Phrase(**phrase) for phrase in loaded]
       return out
   except (FileNotFoundError, json.JSONDecodeError) as e:
     print(f"Could not load phrase list from file {e}")
     return []
+
+
+def locate_phrase_file():
+  dialog = filedialog.askopenfile(
+    "r", filetypes=[("JSON files", "*.json")], 
+    title="Load Phrases", 
+    initialdir=Path.home()).show()
+  
+  if dialog:
+    file_path = Path(dialog.name)
+    if file_path.exists():
+      return file_path
+    else:
+      print(f"Selected file does not exist: {file_path}")
+
+
+
+
+
+def parse_phrase_list(phrase_data):
+  if not phrase_data:
+    return []
+
+
